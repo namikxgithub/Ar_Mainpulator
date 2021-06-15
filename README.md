@@ -1,15 +1,13 @@
-# **_Sahayak Bot_**
+# **AR_Manipulator**
 
 
 
-## Welcome the eYRC 2020's Sahayak Bot theme !!!  
+## This is the Repo for the Augumented Reality project for the UR5 arm organized by E-Yantra  
 
-Please find the base package for this theme from this repository. 
-
+Please follow the steps to setup the project. 
 
 
 > This package is tested on **Ubuntu 18, ROS-Melodic**. We recommend you to use this OS and ROS distribution only.
-
 
 
 ## Installation
@@ -22,26 +20,45 @@ Please find the base package for this theme from this repository.
 sudo apt install ros-melodic-desktop-full
 ```
 
-For those who are familiar with debugging in ROS, may use  `ros-melodic-*` of their choice.
+### Creating a Catkin Workspace
 
-- **Or** you can follow the instruction from the Task Book (mdbook) available on the [eYRC portal](https://portal.e-yantra.org/login).
-
-### Additional Packages 
-
-- "Teleop" package to control `ebot` or any model (all you would need to do is change the message type, do explore in your spare time) from your terminal. For those who have install `ros-melodic-desktop-full` don't need to install this package, since it already available. 
+Go to your home direcory and type the following command in the terminal
 
 ```bash
-sudo apt-get install ros-melodic-teleop-twist-keyboard
+mkdir -p catkin_ws/src
+cd catkin_ws 
+catkin_make && source devel/setup.bash
 ```
+you can also add source `~/catkin_ws/devel/setup.bash` at the bottom of your `.bashrc` in the home direcory if you want to source the the workspace by defualt 
 
 ### Cloning this repository
 
 Inside your `cakin_ws/src`, enter the following command to clone (download) this repository. 
 
 ```bash
-git clone https://github.com/vishalgpt579/sahayak_bot.git
+https://github.com/namikxgithub/ar_mainpulator.git
 ```
 
+### Additional Packages 
 
-<!-- > **Note:** Since we have shifted from simple drive download to more sophisticated approach of sharing packages, there are some limitation in the normal approach, mainly the size of upload. However, this is solved by using Githhub's LFS (Large File System). And hence, you might face a little delay (depending upon your network) in downloading the files tracked by LSF.  -->
+you need to install some packges like Moveit! and rosbridge for the project to work
+
+```bash
+sudo apt-get update && sudo apt-get upgrade
+sudo apt-get install python-pip ros-melodic-robot-state-publisher ros-melodic-moveit ros-melodic-rosbridge-suite ros-melodic-joy ros-melodic-ros-control ros-melodic-ros-controllers ros-melodic-tf2-web-republisher
+sudo -H pip install rospkg jsonpickle
+```
+### Run the project
+
+All set! now we can proceed with the excution part...    
+- Run the following command to spawn the Ur5 arm in gazebo and Rviz
+
+```bash
+roslaunch ebot_description ar_test.launch
+```
+- Now launch the UR5_AR app in your android device or if you are using edditor, start the playmode.
+- After that launch the 'server_connect' launch file in the 'ebot_mani' package. This can be launched by the following command.
+```bash
+roslaunch ebot_mani server_connect.launch
+```
 
