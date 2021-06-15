@@ -1,5 +1,5 @@
 <launch>
-    <!-- <node pkg="ebot_mani" type="ip.sh" name="ip-config" output="screen"/> -->
+    <node pkg="ebot_mani" type="ip.sh" name="ip-config" output="screen"/>
     <rosparam file="$(find ebot_mani)/config/ip_params.yaml" command="load"/>
     <node name="server_endpoint" pkg="ebot_mani" type="server_endpoint.py" args="--wait" output="screen" respawn="true" />
     <node name="set_joint_angles" pkg="ebot_mani" type="arm_joint_angle.py"  output="screen"/>
