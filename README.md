@@ -41,7 +41,7 @@ https://github.com/namikxgithub/ar_mainpulator.git
 
 ### Additional Packages 
 
-you need to install some packges like Moveit! and rosbridge for the project to work
+you need to install some dependencies and packges like Moveit! and rosbridge for the project to work
 
 ```bash
 sudo apt-get update && sudo apt-get upgrade
@@ -57,8 +57,11 @@ All set! now we can proceed with the excution part...
 roslaunch ebot_description ar_test.launch
 ```
 - Now launch the UR5_AR app in your android device or if you are using edditor, start the playmode.
-- After that launch the 'server_connect' launch file in the 'ebot_mani' package. This can be launched by the following command.
+- After that launch the `server_connect` launch file in the `ebot_mani` package. This can be launched by the following command.
 ```bash
 roslaunch ebot_mani server_connect.launch
 ```
+>This starts a TCP Server on the ROS running device to communicate with the AR app. 
+>The joint angles are published on the `SourceDestination` topic which are subscribed by the `arm_joint_angle.py`script in the ebot_mani package to move the arm accordingly in gazebo using moveit!
 
+Now all this is left is to fiddle around with the joint angles in the AR app and hit publish and you will see that the Arm moves in gazbo like you set in the APP
