@@ -17,6 +17,7 @@ class Ur5Moveit:
 
     # Constructor
     def __init__(self):
+        rospy.loginfo('Join Angle Node Has Started')
 
         rospy.init_node('set_joint_angles', anonymous=True)
 
@@ -48,28 +49,31 @@ class Ur5Moveit:
 
     def set_joint_angles(self, arg_list_joint_angles):
 
-        list_joint_values = self._group.get_current_joint_values()
-        rospy.loginfo('\033[94m' + ">>> Current Joint Values:" + '\033[0m')
-        rospy.loginfo(list_joint_values)
+        flag_plan = False
 
-        self._group.set_joint_value_target(arg_list_joint_angles)
-        self._group.plan()
-        flag_plan = self._group.go(wait=True)
+        while(not flag_plan):
+            list_joint_values = self._group.get_current_joint_values()
+            rospy.loginfo('\033[94m' + ">>> Current Joint Values:" + '\033[0m')
+            rospy.loginfo(list_joint_values)
 
-        list_joint_values = self._group.get_current_joint_values()
-        rospy.loginfo('\033[94m' + ">>> Final Joint Values:" + '\033[0m')
-        rospy.loginfo(list_joint_values)
+            self._group.set_joint_value_target(arg_list_joint_angles)
+            self._group.plan()
+            flag_plan = self._group.go(wait=True)
 
-        pose_values = self._group.get_current_pose().pose
-        rospy.loginfo('\033[94m' + ">>> Final Pose:" + '\033[0m')
-        rospy.loginfo(pose_values)
+            list_joint_values = self._group.get_current_joint_values()
+            rospy.loginfo('\033[94m' + ">>> Final Joint Values:" + '\033[0m')
+            rospy.loginfo(list_joint_values)
 
-        if (flag_plan == True):
-            rospy.loginfo(
-                '\033[94m' + ">>> set_joint_angles() Success" + '\033[0m')
-        else:
-            rospy.logerr(
-                '\033[94m' + ">>> set_joint_angles() Failed." + '\033[0m')
+            pose_values = self._group.get_current_pose().pose
+            rospy.loginfo('\033[94m' + ">>> Final Pose:" + '\033[0m')
+            rospy.loginfo(pose_values)
+
+            if (flag_plan == True):
+                rospy.loginfo(
+                    '\033[94m' + ">>> set_joint_angles() Success" + '\033[0m')
+            else:
+                rospy.logerr(
+                    '\033[94m' + ">>> set_joint_angles() Failed." + '\033[0m')
 
         return flag_plan
 

@@ -6,6 +6,7 @@ from ros_tcp_endpoint import TcpServer, RosPublisher, RosSubscriber, RosService
 from ebot_mani.msg import UR5MoveitJoints
 
 def main():
+    rospy.loginfo('Server Connect Node Has Started')
     ros_node_name = rospy.get_param("/TCP_NODE_NAME", 'TCPServer')
     tcp_server = TcpServer(ros_node_name)
     rospy.init_node(ros_node_name, anonymous=True)
