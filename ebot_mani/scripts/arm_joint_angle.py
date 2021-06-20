@@ -50,7 +50,7 @@ class Ur5Moveit:
     def set_joint_angles(self, arg_list_joint_angles):
 
         flag_plan = False
-
+        i = 0
         while(not flag_plan):
             list_joint_values = self._group.get_current_joint_values()
             rospy.loginfo('\033[94m' + ">>> Current Joint Values:" + '\033[0m')
@@ -74,6 +74,10 @@ class Ur5Moveit:
             else:
                 rospy.logerr(
                     '\033[94m' + ">>> set_joint_angles() Failed." + '\033[0m')
+            i+=1
+            if i>4:
+                rospy.logerr('Motion_Plan not found, Please Change the joint angles')
+                break
 
         return flag_plan
 

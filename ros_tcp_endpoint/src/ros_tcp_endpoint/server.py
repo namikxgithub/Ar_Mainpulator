@@ -75,7 +75,9 @@ class TcpServer:
         Creates and binds sockets using TCP variables then listens for incoming connections.
         For each new connection a client thread will be created to handle communication.
         """
-        rospy.loginfo("Starting server on {}:{}".format(self.tcp_ip, self.tcp_port))
+        rospy.logwarn("Starting ROS-TCP-Server, please connect to the following IP")
+        rospy.logwarn("IP: {}".format(self.tcp_ip))
+        rospy.logwarn("TCP port: {}".format( self.tcp_port))
         tcp_server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         tcp_server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         tcp_server.bind((self.tcp_ip, self.tcp_port))
