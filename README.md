@@ -48,13 +48,15 @@ sudo apt-get update && sudo apt-get upgrade
 sudo apt-get install python-pip ros-melodic-robot-state-publisher ros-melodic-moveit ros-melodic-rosbridge-suite ros-melodic-joy ros-melodic-ros-control ros-melodic-ros-controllers ros-melodic-tf2-web-republisher
 sudo -H pip install rospkg jsonpickle
 ```
+After installing all the packages go to the workspace and do `catkin_make` again and you are good to go!
+
 ## Run the project
 
 All set! now we can proceed with the excution part...    
 - First launch the UR5_AR app in your android device or enter the playmode if you are using the unity editor.
 - After that launch the `ar_test` launch file in the `ebot_description` package. This can be launched by the following command.
 ```bash
-roslaunch ebot_description ar_test.launch
+roslaunch ebot_mani ar_test.launch
 ```
 >This will launch the UR5 arm in Rviz and Gazebo
 >A TCP Server will start on the ROS running device to communicate with the AR app. 
