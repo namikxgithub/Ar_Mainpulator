@@ -4,6 +4,7 @@ project(ebot_mani)
 
 find_package(catkin REQUIRED COMPONENTS
   rospy
+  roscpp
   std_msgs
   geometry_msgs
   ros_tcp_endpoint
@@ -18,6 +19,11 @@ find_package(catkin REQUIRED COMPONENTS
 add_message_files(
   FILES
   UR5MoveitJoints.msg
+)
+
+add_service_files(
+  FILES
+  MoverService.srv
 )
 
 generate_messages(

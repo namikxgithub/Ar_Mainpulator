@@ -5,13 +5,46 @@ import sys
 import copy
 import moveit_commander
 import moveit_msgs.msg
+from moveit_msgs.msg import Constraints, JointConstraint, PositionConstraint, OrientationConstraint, BoundingVolume
+from sensor_msgs.msg import JointState
+from moveit_msgs.msg import RobotState
+
 import geometry_msgs.msg
+import geometry_msgs.msg
+from geometry_msgs.msg import Quaternion, Pose
+
+from std_msgs.msg import String
+from moveit_commander.conversions import pose_to_list
+
+
+from ebot_mani.srv import MoverService, MoverServiceRequest, MoverServiceResponse
+
 import actionlib
 import math
+
+from sensor_msgs.msg import JointState
 from ebot_mani.msg import UR5MoveitJoints
 
 joint_angles = [0,0,0,0,0,0]
+joint_names = [
+                "shoulder_pan_joint",
+                "shoulder_lift_joint",
+                "elbow_joint",
+                "wrist_1_joint",
+                "wrist_2_joint",
+                "wrist_3_joint"
+                ]
 
+
+
+# Between Melodic and Noetic, the return type of plan() changed. moveit_commander has no __version__ variable, so checking the python version as a proxy
+if sys.version_info >= (3, 0):
+    def planCompat(plan):
+        return plan[1]
+else:
+    def planCompat(plan):
+        return plan
+        
 
 class Ur5Moveit:
 
@@ -20,6 +53,7 @@ class Ur5Moveit:
         rospy.loginfo('Join Angle Node Has Started')
 
         rospy.init_node('set_joint_angles', anonymous=True)
+        rospy.Service('ur5_moveit', MoverService, self.plan_pick_and_place)
 
         self._planning_group = "ur5_1_planning_group"
         self._commander = moveit_commander.roscpp_initialize(sys.argv)
@@ -46,6 +80,54 @@ class Ur5Moveit:
             '\033[94m' + "Group Names: {}".format(self._group_names) + '\033[0m')
 
         rospy.loginfo('\033[94m' + " >>> Ur5Moveit init done." + '\033[0m')
+
+    def plan_trajectory(self, move_group, destination_pose, start_joint_angles): 
+        current_joint_state = JointState()
+        current_joint_state.name = joint_names
+        current_joint_state.position = start_joint_angles
+
+        moveit_robot_state = RobotState()
+        moveit_robot_state.joint_state = current_joint_state
+        move_group.set_start_state(moveit_robot_state)
+
+        move_group.set_pose_target(destination_pose)
+        plan = move_group.plan()
+
+        if not plan:
+            exception_str = """
+                Trajectory could not be planned for a destination of {} with starting joint angles {}.
+                Please make sure target and destination are reachable by the robot.
+            """.format(destination_pose, destination_pose)
+            raise Exception(exception_str)
+
+        return planCompat(plan)
+
+    def plan_pick_and_place(self, req):
+        response = MoverServiceResponse()
+        move_group = self._group
+        # TODO: Make message type a list instead
+        current_robot_joint_configuration = [
+            math.radians(req.joints_input.joint_00),
+            math.radians(req.joints_input.joint_01),
+            math.radians(req.joints_input.joint_02),
+            math.radians(req.joints_input.joint_03),
+            math.radians(req.joints_input.joint_04),
+            math.radians(req.joints_input.joint_05),
+        ]
+
+        # Pre grasp - position gripper directly above target object
+        pre_grasp_pose = self.plan_trajectory(self._group, req.pick_pose, current_robot_joint_configuration)
+        
+        # If the trajectory has no points, planning has failed and we return an empty response
+        if not pre_grasp_pose.joint_trajectory.points:
+            return response
+
+        # If trajectory planning worked for all pick and place stages, add plan to response
+        response.trajectories.append(pre_grasp_pose)
+    
+        move_group.clear_pose_targets()
+        move_group.go(wait=True)
+        return response
 
     def set_joint_angles(self, arg_list_joint_angles):
 
@@ -103,7 +185,6 @@ def callback(joints):
 
 def main():
     global joint_angles, ur5
-
     rospy.Subscriber("SourceDestination", UR5MoveitJoints, callback)
 
     rospy.spin()
