@@ -12,6 +12,7 @@ from moveit_msgs.msg import RobotState
 import geometry_msgs.msg
 import geometry_msgs.msg
 from geometry_msgs.msg import Quaternion, Pose
+from tf.transformations import quaternion_from_euler
 
 from std_msgs.msg import String
 from moveit_commander.conversions import pose_to_list
@@ -105,6 +106,17 @@ class Ur5Moveit:
     def plan_pick_and_place(self, req):
         response = MoverServiceResponse()
         move_group = self._group
+        ori = [-1.69788433675, -1.0154567338602, 0]
+        orientation = quaternion_from_euler(ori[0], ori[1], ori[2], axes='sxyz')
+
+        req.pick_pose.position.x += 1.2
+        req.pick_pose.position.y += 0.76
+        req.pick_pose.position.z -= 0.55
+        req.pick_pose.orientation.x = -0.6558968
+        req.pick_pose.orientation.y = -0.3212657
+        req.pick_pose.orientation.z = 0.364928
+        req.pick_pose.orientation.w = 0.5774212
+        rospy.logwarn(req.pick_pose)
         # TODO: Make message type a list instead
         current_robot_joint_configuration = [
             math.radians(req.joints_input.joint_00),
