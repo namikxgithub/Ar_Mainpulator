@@ -19,6 +19,7 @@ find_package(catkin REQUIRED COMPONENTS
 add_message_files(
   FILES
   UR5MoveitJoints.msg
+  bot.msg
 )
 
 add_service_files(

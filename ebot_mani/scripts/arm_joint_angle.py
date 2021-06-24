@@ -10,7 +10,6 @@ from sensor_msgs.msg import JointState
 from moveit_msgs.msg import RobotState
 
 import geometry_msgs.msg
-import geometry_msgs.msg
 from geometry_msgs.msg import Quaternion, Pose
 from tf.transformations import quaternion_from_euler
 
@@ -83,15 +82,23 @@ class Ur5Moveit:
         rospy.loginfo('\033[94m' + " >>> Ur5Moveit init done." + '\033[0m')
 
     def plan_trajectory(self, move_group, destination_pose, start_joint_angles): 
-        current_joint_state = JointState()
-        current_joint_state.name = joint_names
-        current_joint_state.position = start_joint_angles
+        # current_joint_state = JointState()
+        # current_joint_state.name = joint_names
+        # current_joint_state.position = start_joint_angles
 
-        moveit_robot_state = RobotState()
-        moveit_robot_state.joint_state = current_joint_state
-        move_group.set_start_state(moveit_robot_state)
-
-        move_group.set_pose_target(destination_pose)
+        # moveit_robot_state = RobotState()
+        # moveit_robot_state.joint_state = current_joint_state
+        # move_group.set_start_state(moveit_robot_state)
+        destination_pose_ur5 = geometry_msgs.msg.Pose()
+        destination_pose_ur5.position.x = destination_pose.pos_x
+        destination_pose_ur5.position.y = destination_pose.pos_z
+        destination_pose_ur5.position.z = destination_pose.pos_y
+        destination_pose_ur5.orientation.x = 0 #destination_pose.rot_x
+        destination_pose_ur5.orientation.y = -1 #destination_pose.rot_y
+        destination_pose_ur5.orientation.z = 0 #destination_pose.rot_z
+        destination_pose_ur5.orientation.w = 0 #destination_pose.rot_w
+        rospy.loginfo(destination_pose_ur5)
+        move_group.set_pose_target(destination_pose_ur5)
         plan = move_group.plan()
 
         if not plan:
@@ -106,17 +113,21 @@ class Ur5Moveit:
     def plan_pick_and_place(self, req):
         response = MoverServiceResponse()
         move_group = self._group
-        ori = [-1.69788433675, -1.0154567338602, 0]
-        orientation = quaternion_from_euler(ori[0], ori[1], ori[2], axes='sxyz')
+        self._group.set_planning_time(20)
+        # ori = [-1.69788433675, -1.0154567338602, 0]
+        # orientation = quaternion_from_euler(ori[0], ori[1], ori[2], axes='sxyz')
 
-        req.pick_pose.position.x += 1.2
-        req.pick_pose.position.y += 0.76
-        req.pick_pose.position.z -= 0.55
-        req.pick_pose.orientation.x = -0.6558968
-        req.pick_pose.orientation.y = -0.3212657
-        req.pick_pose.orientation.z = 0.364928
-        req.pick_pose.orientation.w = 0.5774212
-        rospy.logwarn(req.pick_pose)
+        # req.pick_pose.position.x += 1.2
+        # req.pick_pose.position.y += 0.76
+        # req.pick_pose.position.z -= 0.55
+        # req.pick_pose.orientation.x = -0.6558968
+        # req.pick_pose.orientation.y = -0.3212657
+        # req.pick_pose.orientation.z = 0.364928
+        # req.pick_pose.orientation.w = 0.5774212
+        # rospy.logwarn(req.pick_pose)
+        pose_values = geometry_msgs.msg.Pose()
+        pose_values = self._group.get_current_pose().pose
+        rospy.loginfo(pose_values)
         # TODO: Make message type a list instead
         current_robot_joint_configuration = [
             math.radians(req.joints_input.joint_00),
@@ -138,7 +149,9 @@ class Ur5Moveit:
         response.trajectories.append(pre_grasp_pose)
     
         move_group.clear_pose_targets()
+        print("\n\n\nMoving arm in unity\n\n\n")
         move_group.go(wait=True)
+        print("\n\n\nending move\n\n\n")
         return response
 
     def set_joint_angles(self, arg_list_joint_angles):

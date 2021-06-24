@@ -1,0 +1,8 @@
+prefix=/usr/local
+
+Name: ebot_mani
+Description: Description of ebot_mani
+Version: 0.3.0
+Cflags: -I${prefix}/include
+Libs: -L${prefix}/lib 
+Requires: 

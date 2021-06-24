@@ -1,0 +1,8 @@
+prefix=/home/kurkure/dev_ws/src/Ar_Mainpulator/ebot_mani/devel
+
+Name: ebot_mani
+Description: Description of ebot_mani
+Version: 0.3.0
+Cflags: -I/home/kurkure/dev_ws/src/Ar_Mainpulator/ebot_mani/devel/include
+Libs: -L${prefix}/lib 
+Requires: 
