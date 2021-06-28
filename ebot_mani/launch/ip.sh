@@ -8,4 +8,4 @@ parent=$(dirname $dir_path )
 
 
 # ls $parent/config 
-echo "ROS_IP: $(hostname -I)" | awk '{print $1, $2}' > $parent/config/ip_params.yaml
+echo "ROS_IP: $(hostname -I)" | awk '{print $1, $3}' > $parent/config/ip_params.yaml

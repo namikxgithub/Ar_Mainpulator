@@ -1,5 +1,5 @@
 <launch>
-	<node pkg="ebot_mani" type="ip.sh" name="ip_config" output="screen"/>
+	<!-- <node pkg="ebot_mani" type="ip.sh" name="ip_config" output="screen"/> -->
 <!--   ebot -->
 	<param name="robot_description" command="$(find xacro)/xacro --inorder '$(find ebot_mani)/urdf/ur_robotiq.urdf.xacro'"/>
    
@@ -23,7 +23,7 @@
 		
 <!-- include the moveit launch file and node for pick and place -->
 <include file="$(find ebot_mani)/launch/ur5_bringup_moveit.launch" />
-<node name="get_ip" pkg="ebot_mani" type="ip.sh"  output="screen"/>
+<!-- <node name="get_ip" pkg="ebot_mani" type="ip.sh"  output="screen"/> -->
 <node name="server_endpoint" pkg="ebot_mani" type="server.sh" output="screen" respawn="true" />
 <!-- <include file="$(find ebot_mani)/launch/server_connect.launch" /> -->
 <!-- </include> -->
