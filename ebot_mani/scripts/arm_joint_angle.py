@@ -96,7 +96,7 @@ class Ur5Moveit:
         destination_pose_ur5 = geometry_msgs.msg.Pose()
         destination_pose_ur5.position.x = destination_pose.pos_x
         destination_pose_ur5.position.y = destination_pose.pos_z
-        destination_pose_ur5.position.z = destination_pose.pos_y - 0.77
+        destination_pose_ur5.position.z = destination_pose.pos_y + 0.225
         destination_pose_ur5.orientation.x = orientation[0] #destination_pose.rot_x
         destination_pose_ur5.orientation.y = orientation[1] #destination_pose.rot_y
         destination_pose_ur5.orientation.z = orientation[2] #destination_pose.rot_z
