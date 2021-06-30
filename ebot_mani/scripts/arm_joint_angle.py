@@ -89,14 +89,18 @@ class Ur5Moveit:
         # moveit_robot_state = RobotState()
         # moveit_robot_state.joint_state = current_joint_state
         # move_group.set_start_state(moveit_robot_state)
+
+        ori = [-1.57093100782, -6.75505852993e-05, -1.57047131029]
+        orientation = quaternion_from_euler(ori[0], ori[1], ori[2], axes='sxyz')
+
         destination_pose_ur5 = geometry_msgs.msg.Pose()
         destination_pose_ur5.position.x = destination_pose.pos_x
         destination_pose_ur5.position.y = destination_pose.pos_z
-        destination_pose_ur5.position.z = destination_pose.pos_y
-        destination_pose_ur5.orientation.x = 0 #destination_pose.rot_x
-        destination_pose_ur5.orientation.y = -1 #destination_pose.rot_y
-        destination_pose_ur5.orientation.z = 0 #destination_pose.rot_z
-        destination_pose_ur5.orientation.w = 0 #destination_pose.rot_w
+        destination_pose_ur5.position.z = destination_pose.pos_y - 0.77
+        destination_pose_ur5.orientation.x = orientation[0] #destination_pose.rot_x
+        destination_pose_ur5.orientation.y = orientation[1] #destination_pose.rot_y
+        destination_pose_ur5.orientation.z = orientation[2] #destination_pose.rot_z
+        destination_pose_ur5.orientation.w = orientation[3] #destination_pose.rot_w
         rospy.loginfo(destination_pose_ur5)
         move_group.set_pose_target(destination_pose_ur5)
         plan = move_group.plan()
