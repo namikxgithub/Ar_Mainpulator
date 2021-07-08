@@ -1,4 +1,7 @@
 #! /usr/bin/env python
+"""
+Dummy script for finding orientation of gazebo world wrt unity scene. 
+"""
 import rospy 
 import rospkg 
 from gazebo_msgs.msg import ModelState 

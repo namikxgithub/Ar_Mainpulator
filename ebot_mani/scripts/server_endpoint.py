@@ -1,5 +1,8 @@
 #!/usr/bin/env python
-
+"""
+Server endpoint script.
+Specifies how pubishers, subscribers and services are to be redirected. 
+"""
 import rospy
 
 from ros_tcp_endpoint import TcpServer, RosPublisher, RosSubscriber, RosService

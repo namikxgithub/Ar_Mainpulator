@@ -1,3 +1,4 @@
+<!-- Launch file for starting server endpoint -->
 <launch>
     
     <rosparam file="$(find ebot_mani)/config/ip_params.yaml" command="load"/>

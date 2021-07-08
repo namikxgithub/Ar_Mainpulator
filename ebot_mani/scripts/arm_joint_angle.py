@@ -1,5 +1,14 @@
 #! /usr/bin/env python
+"""
+Controller script for UR5 arm
 
+Functions performed:
+    1. Subscribes to "SourceDestination" to get the joint angles from Unity.
+    2. Updates joint angles at ROS side for UR5 arm.
+    3. Gets response from MoverService
+    4. Uses the respose to plan trajectory for pick & place.
+    5. Send the response back to Unity. 
+"""
 import rospy
 import sys
 import copy
@@ -81,7 +90,9 @@ class Ur5Moveit:
 
         rospy.loginfo('\033[94m' + " >>> Ur5Moveit init done." + '\033[0m')
 
-    def plan_trajectory(self, move_group, destination_pose, start_joint_angles): 
+    def plan_trajectory(self, move_group, destination_pose, start_joint_angles):
+    """Function to plan trajectory based on the current Joint angles and destination pose.
+    """ 
         # current_joint_state = JointState()
         # current_joint_state.name = joint_names
         # current_joint_state.position = start_joint_angles
@@ -111,6 +122,9 @@ class Ur5Moveit:
         return planCompat(plan)
 
     def plan_pick_and_place(self, req):
+    """Callback function to unpack data, calling plan_trajectory on the poses and 
+        returning planned trajectory.
+    """
         response = MoverServiceResponse()
         move_group = self._group
         self._group.set_planning_time(20)
@@ -155,7 +169,8 @@ class Ur5Moveit:
         return response
 
     def set_joint_angles(self, arg_list_joint_angles):
-
+        """Function to change the joint angle of UR5 arm to the ones in arg_list_joint_angles
+        """
         flag_plan = False
         i = 0
         while(not flag_plan):
@@ -198,6 +213,8 @@ class Ur5Moveit:
 ur5 = Ur5Moveit()
 
 def callback(joints):
+    """Callback function for SourceDestination topic.
+    """
     global joint_angles, ur5
     joint_angles = [math.radians(joints.joint_00),
                     math.radians(joints.joint_01),
@@ -209,6 +226,9 @@ def callback(joints):
     rospy.loginfo(joint_angles)
 
 def main():
+    """Main entry point of the script.
+        Subscribes to Source destiantion topic.
+    """
     global joint_angles, ur5
     rospy.Subscriber("SourceDestination", UR5MoveitJoints, callback)
 

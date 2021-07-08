@@ -1,5 +1,6 @@
+<!-- Launch file for starting ROS-TCP endpoint along with a simulated environment. This launch file auto-configures the ROS IP -->
 <launch>
-	<!-- <node pkg="ebot_mani" type="ip.sh" name="ip_config" output="screen"/> -->
+	<node pkg="ebot_mani" type="ip.sh" name="ip_config" output="screen"/>
 <!--   ebot -->
 	<param name="robot_description" command="$(find xacro)/xacro --inorder '$(find ebot_mani)/urdf/ur_robotiq.urdf.xacro'"/>
    
